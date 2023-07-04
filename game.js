@@ -146,8 +146,9 @@ class StackerGame extends Phaser.Scene {
         this.add.image((config.width / 2), (config.height / 2), 'bg').setDisplaySize(config.width, config.height);
         this.add.image((config.width / 2), config.height - 200, 'grid').setDisplaySize(800, 376);
 
-        this.add.text(ox - size, oy, rows, { fontFamily: 'bebas', fontSize: config.width * 23.5 / 414, color: '#ffffff', align: 'right' }).setShadow(2, 2, "#333333", 2, false, true);
-
+        for (let [index, item] of rows.entries()) {
+          this.add.text(ox - size, oy + index * size, item, { fontFamily: 'bebas', fontSize: size / 1.3, color: '#ffffff', align: 'right' }).setShadow(2, 2, "#333333", 2, false, true);
+        }
         this.add.grid(ox, oy, gw * size, gh * size, size, size, 0x999999, 1, 0x666666).setOrigin(0);
 
         this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
