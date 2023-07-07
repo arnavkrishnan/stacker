@@ -12,6 +12,9 @@ class Boot extends Phaser.Scene {
         document.head.appendChild(element);
 
         element.sheet.insertRule('@font-face { font-family: "bebas"; src: url("https://labs.phaser.io/assets/fonts/ttf/bebas.ttf") format("truetype"); }', 0);
+
+        this.registry.set('highscore', 0);
+        this.registry.set('newBest', false);
     }
 
     preload ()
@@ -146,9 +149,11 @@ class StackerGame extends Phaser.Scene {
         this.add.image((config.width / 2), (config.height / 2), 'bg').setDisplaySize(config.width, config.height);
         this.add.image((config.width / 2), config.height - 200, 'grid').setDisplaySize(800, 376);
 
+
         for (let [index, item] of rows.entries()) {
           this.add.text(ox - size, oy + index * size, item, { fontFamily: 'bebas', fontSize: size / 1.3, color: '#ffffff', align: 'right' }).setShadow(2, 2, "#333333", 2, false, true);
         }
+
         this.add.grid(ox, oy, gw * size, gh * size, size, size, 0x999999, 1, 0x666666).setOrigin(0);
 
         this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
@@ -496,10 +501,6 @@ class GameOver extends Phaser.Scene {
         var prizes2 = [ 'Mario Stickers', 'SNES Joypad', 'Superman Cape', 'Contra Poster', 'Bubble Machine', 'X-Ray Specs', 'Skateboard' ];
         var prizes3 = [ 'Playstation 4', 'A Tardis', 'An X-Wing', 'Super Nintendo', 'Arcade Machine', 'Dragon Egg', 'Personal Cyborg' ];
 
-        var score = this.registry.get('score');
-
-        console.log(score);
-
         var prizelist = [
             'Nothing',
             '',
@@ -510,23 +511,23 @@ class GameOver extends Phaser.Scene {
 
         var title = 'GAME OVER!';
 
-        if (score >= 5)
+        if (this.registry.get('score') >= 5)
         {
             prizelist[0] = Phaser.Utils.Array.GetRandom(prizes1);
         }
 
-        if (score >= 10)
+        if (this.registry.get('score') >= 10)
         {
             prizelist[2] = Phaser.Utils.Array.GetRandom(prizes2);
         }
 
-        if (score === 15)
+        if (this.registry.get('score') === 15)
         {
             prizelist[4] = Phaser.Utils.Array.GetRandom(prizes3);
             title = 'GAME WON!';
         }
 
-        if (score < 5)
+        if (this.registry.get('score') < 15)
         {
             this.sound.play('gamelost');
         }
@@ -535,13 +536,30 @@ class GameOver extends Phaser.Scene {
             this.sound.play('gamewon');
         }
 
+        if (this.registry.get('score') > this.registry.get('highscore')) {
+
+          this.registry.set('highscore', this.registry.get('score'));
+          this.registry.set('newBest', true);
+
+        } else {
+
+          this.registry.set('newBest', false);
+
+        }
+
         this.add.text(config.width / 2, config.height / 16, title, { fontFamily: 'bebas', fontSize: config.width / 5, color: '#ffffff' }).setShadow(2, 2, "#333333", 2, false, true).setOrigin(0.5);
         this.add.text(config.width / 2, config.height / 6, 'Let\'s see what you have won:', { fontFamily: 'bebas', fontSize: config.width / 13, color: '#ffffff' }).setShadow(2, 2, "#333333", 2, false, true).setOrigin(0.5);
 
         this.add.text(config.width / 2 - config.width / 4, config.height / 2.5, list, { fontFamily: 'bebas', fontSize: config.width / 18, color: '#ffffff', align: 'right' }).setShadow(2, 2, "#333333", 2, false, true).setOrigin(0.5);
         this.add.text(config.width / 2 + config.width / 4, config.height / 2.5, prizelist, { fontFamily: 'bebas', fontSize: config.width / 18, color: '#ffff00' }).setShadow(2, 2, "#333333", 2, false, true).setOrigin(0.5);
 
-        this.add.text(config.width / 2, config.height - 200, 'Click to try again!', { fontFamily: 'bebas', fontSize: config.width / 20, color: '#ffffff' }).setShadow(2, 2, "#333333", 2, false, true).setOrigin(0.5);
+        if (this.registry.get('newBest') == false) {
+          this.add.text(config.width / 2, config.height - config.height / 7, `Score: ${this.registry.get('score')}`, { fontFamily: 'bebas', fontSize: config.width / 20, color: '#ffffff' }).setShadow(2, 2, "#333333", 2, false, true).setOrigin(0.5);
+        } else {
+          this.add.text(config.width / 2, config.height - config.height / 7, `new highscore: ${this.registry.get('score')}`, { fontFamily: 'bebas', fontSize: config.width / 20, color: '#ffffff' }).setShadow(2, 2, "#333333", 2, false, true).setOrigin(0.5);
+        }
+
+        this.add.text(config.width / 2, config.height - config.height / 10, 'Click to try again!', { fontFamily: 'bebas', fontSize: config.width / 20, color: '#ffffff' }).setShadow(2, 2, "#333333", 2, false, true).setOrigin(0.5);
 
         this.input.keyboard.once('keydown_SPACE', this.restart, this);
         this.input.once('pointerdown', this.restart, this);
