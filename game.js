@@ -554,7 +554,8 @@ class GameOver extends Phaser.Scene {
         this.add.text(config.width / 2 + config.width / 4, config.height / 2.5, prizelist, { fontFamily: 'bebas', fontSize: config.width / 18, color: '#ffff00' }).setShadow(2, 2, "#333333", 2, false, true).setOrigin(0.5);
 
         if (this.registry.get('newBest') == false) {
-          this.add.text(config.width / 2, config.height - config.height / 7, `Score: ${this.registry.get('score')}`, { fontFamily: 'bebas', fontSize: config.width / 20, color: '#ffffff' }).setShadow(2, 2, "#333333", 2, false, true).setOrigin(0.5);
+          this.add.text(config.width / 2, config.height - config.height / 5, `Score: ${this.registry.get('score')}`, { fontFamily: 'bebas', fontSize: config.width / 20, color: '#ffffff' }).setShadow(2, 2, "#333333", 2, false, true).setOrigin(0.5);
+          this.add.text(config.width / 2, config.height - config.height / 7, `Highscoree: ${this.registry.get('highscore')}`, { fontFamily: 'bebas', fontSize: config.width / 20, color: '#ffffff' }).setShadow(2, 2, "#333333", 2, false, true).setOrigin(0.5);
         } else {
           this.add.text(config.width / 2, config.height - config.height / 7, `new highscore: ${this.registry.get('score')}`, { fontFamily: 'bebas', fontSize: config.width / 20, color: '#ffffff' }).setShadow(2, 2, "#333333", 2, false, true).setOrigin(0.5);
         }
